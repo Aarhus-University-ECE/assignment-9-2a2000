@@ -12,17 +12,41 @@ void DFT (node * root)
 {
 	// Implement DFS
 	// Hint: You can use print_node, print_tree and/or print_stack.
+
+  // first we creat a stack and let point to NULL
+  // to store the values of the tree 
+
+  stack *s=malloc(sizeof(stack));
+  s->next = NULL;
+  push(s, root); // to make sure it's empty 
+
+  while (!isEmpty(s))
+  {
+    //now pop the top value in the stack 
+    node *current = pop(s)->node; //the value at the top
+
+    // if there is any right and left child to the stack push them to the s
+    if (current->rchild != NULL) {
+      push(s, current->rchild);
+    } 
+    if (current->lchild != NULL) {
+      push(s, current->lchild);
+      }
+  }
 }
 
 node *make_node (int num, node * left, node * right)
 {
-	return 0;
+  //allocat memory and give value to the new node
+  node *n = malloc(sizeof(node));  // tree pointer 
+  n->num = num;
+  n->lchild = left;  // values to new nodes
+  n->rchild = right;
+  n->visited = false;
+	return n;
 }
 
-void free_node (node * p)
-{
-	
-}
+void free_node (node * p){}
 
 
 void print_node (node * p)
@@ -31,11 +55,11 @@ void print_node (node * p)
   if (p == NULL)
     printf ("NULL\n");
   else
-    printf ("%d", p->num);
+    printf ("%d\t", p->num);
 }
 
 
-void print_tree (node * p, int depth)
+void print_tree (node *p, int depth)
 {
   for (int i = 0; i < depth; i = i + 1)
     printf (" ");
@@ -56,17 +80,23 @@ void print_tree (node * p, int depth)
     print_tree (p->rchild, depth + 1);
 }
 
-stack *push (stack * topp, node * node)
+stack *push (stack *topp, node *node)
 {
-	return 0;
+  //we allocat memory to the stack created, and give value 
+  stack *s_d = malloc(sizeof(stack));
+    s_d->node = node;
+    s_d->next = topp->next;
+    topp->next = s_d;
+
+	return s_d;
 }
 
-bool isEmpty (stack * topp)
+bool isEmpty(stack *topp)
 {
-  return false;
+  return topp->next == NULL;
 }
 
-node *top (stack * topp)
+node *top (stack *topp)
 {
 	return 0;
 }
@@ -76,7 +106,9 @@ node *top (stack * topp)
 
 stack *pop (stack * topp)
 {
-	return 0;
+  stack *helper = topp->next;
+  topp->next = topp->next->next;;
+  return helper;
 }
 
 void print_stack (stack * topp)
